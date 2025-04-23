@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { SignUpFormInput } from './generic/SignUpFormInput';
-import { createUserDoc, userSignInWithEmailAndPassword } from '../../utils/firebase/firebase.utils';
-import { AppUser } from '../interface/AppUser.type';
 import { ThemeButton } from './generic/ThemeButton';
+import { createUserDoc, firebaseErrorCodes, userSignInWithEmailAndPassword, signInWithGooglePopup } from '../../utils/firebase/firebase.utils';
+import { FirebaseError } from 'firebase/app';
 
 const defaultFields = {
     signInEmail: '',
@@ -16,17 +16,30 @@ const defaultValidations = {
 }
 
 type SignInProps = {
-    logGoogleUser: () => Promise<void>,
-    updateUserState: (userDoc: AppUser) => void;
     setLoadingState: () => void
     unsetLoadingState: () => void
 }
 
-export const SignIn = ({ logGoogleUser, updateUserState, setLoadingState, unsetLoadingState }: SignInProps) => {
+export const SignIn = ({ setLoadingState, unsetLoadingState }: SignInProps) => {
     const [formFields, setFormFields] = useState(defaultFields);
     const [validationError, setValidationError] = useState(defaultValidations);
-
     const {signInEmail, signInPassword} = formFields;
+
+    const logGoogleUser = async () => {
+        setLoadingState();
+        try {
+            const res = await signInWithGooglePopup();
+            console.log(res,'res');
+        }catch (e:unknown) {
+            console.log(e.code);
+            if (e instanceof FirebaseError) {
+                console.log(e.code);
+                setValidationError({...validationError, ['firebaseError']: firebaseErrorCodes[e.code]});
+            }
+        } finally {
+            unsetLoadingState();
+        }
+    }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event?.target;
@@ -34,9 +47,17 @@ export const SignIn = ({ logGoogleUser, updateUserState, setLoadingState, unsetL
         setValidationError({...validationError, [name]: ''});
     }
 
+    const resetForm = () => {
+        setFormFields(defaultFields);
+        setValidationError(defaultValidations);
+    }
+
     const handleSignIn = async (event: React.SyntheticEvent) => {
         event.preventDefault();
+
         setLoadingState();
+        resetForm();
+
         if (!signInEmail) {
             setValidationError({...validationError, ['signInEmail']: 'Email is a required field'});
             return;
@@ -47,14 +68,15 @@ export const SignIn = ({ logGoogleUser, updateUserState, setLoadingState, unsetL
         }
         try {
             const response = await userSignInWithEmailAndPassword(signInEmail, signInPassword);
-            console.log(response);
-            const user = response.user;
-            const userData = await createUserDoc(user);
-            if (userData) updateUserState(userData);
+            await createUserDoc(response.user);
+        } catch (e:unknown) {
+            if (e instanceof FirebaseError) {
+                setValidationError({...validationError, ['firebaseError']: firebaseErrorCodes[e.code]});
+            }
+        } finally {
             unsetLoadingState();
-        } catch (e) {
-            setValidationError({...validationError, ['firebaseError']: 'Invalid Credentials'});
         }
+        
     }
     return (
         <>
@@ -86,8 +108,11 @@ export const SignIn = ({ logGoogleUser, updateUserState, setLoadingState, unsetL
                         autoComplete='off'
                         validationError={validationError.signInPassword}
                     />
+                    <div className='p-2 text-red-500 text-xs text-center'>
+                        {validationError.firebaseError}
+                    </div>
                     <div className='p-2'>
-                        <div className='text-center'>
+                        <div className='text-center flex justify-center space-x-4'>
                             <ThemeButton btntype="primary" type="submit">Sign In</ThemeButton>
                             <ThemeButton btntype="outlined" type="button" cb={logGoogleUser}>Sign In With Google</ThemeButton>
                         </div>

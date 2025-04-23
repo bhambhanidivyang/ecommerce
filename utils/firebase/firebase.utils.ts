@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { User, getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth'
+import { User, getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, NextOrObserver} from 'firebase/auth'
 import {getFirestore, doc, getDoc, setDoc} from 'firebase/firestore'
 
 // Your web app's Firebase configuration
@@ -20,8 +20,40 @@ provider.setCustomParameters({
     prompt: "select_account"
 })
 
+export const firebaseErrorCodes: Record<string, string> = {
+  "auth/invalid-email": "The email address is badly formatted.",
+  "auth/user-disabled": "The user account has been disabled by an admin.",
+  "auth/user-not-found": "There is no user record corresponding to this email.",
+  "auth/wrong-password": "The password is invalid or the user does not have a password.",
+  "auth/email-already-in-use": "The email address is already in use by another account.",
+  "auth/operation-not-allowed": "Email/password accounts are not enabled. Enable in Firebase console.",
+  "auth/weak-password": "The password must be 6 characters long or more.",
+  "auth/too-many-requests": "Too many unsuccessful login attempts. Try again later.",
+  "auth/network-request-failed": "Network error (e.g., connection timed out).",
+  "auth/internal-error": "An internal error occurred. Try again.",
+  "auth/invalid-credential": "Invalid Credentials. Email or Password does not match.",
+  "auth/invalid-verification-code": "The SMS verification code is invalid.",
+  "auth/invalid-verification-id": "The verification ID is not valid.",
+  "auth/account-exists-with-different-credential": "The account already exists with a different sign-in method.",
+  "auth/credential-already-in-use": "This credential is already associated with a different user account.",
+  "auth/missing-verification-code": "No verification code provided (phone auth).",
+  "auth/missing-verification-id": "No verification ID provided (phone auth).",
+  "auth/invalid-phone-number": "The phone number format is invalid.",
+  "auth/missing-phone-number": "No phone number provided.",
+  "auth/app-deleted": "The Firebase app instance was deleted.",
+  "auth/requires-recent-login": "This operation is sensitive and requires recent authentication.",
+  "auth/unauthorized-domain": "The domain of the app is not authorized for OAuth.",
+  "auth/invalid-action-code": "The action code in the password reset or email verification link is invalid.",
+  "auth/expired-action-code": "The action code has expired.",
+  "auth/invalid-api-key": "The API key is invalid or missing.",
+  "auth/invalid-emulator-scheme": "The emulator URL scheme is invalid.",
+  "auth/popup-closed-by-user": "Restricted Access. Popup closed by user."
+}
+
+
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+
+export const signInWithGooglePopup = async () => await signInWithPopup(auth, provider);
 
 export const db = getFirestore();
 
@@ -55,6 +87,11 @@ export const createUserFromEmailAndPassword = async (email: string, password: st
 };
 
 export const userSignInWithEmailAndPassword = async (email: string, password: string) => {
-  console.log(email, password);
-  return await signInWithEmailAndPassword(auth, email, password);
+  const res = await signInWithEmailAndPassword(auth, email, password);
+  return res;
 }
+
+export const signOutUser = async () => await signOut(auth);
+
+
+export const onAuthStateChangedListener = (callback:NextOrObserver<User>) => onAuthStateChanged(auth, callback);

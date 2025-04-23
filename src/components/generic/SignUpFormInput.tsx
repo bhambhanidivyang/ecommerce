@@ -9,7 +9,6 @@ type InputProps = {
 export const SignUpFormInput = ({ label = '', value = "", validationError, ...otherProps }: InputProps) => {
     const [isFocused, setIsFocused] = useState(false);
     const shouldShrink = isFocused || value.length > 0;
-    console.log(shouldShrink,'shouldshrink');
     return (
         <>
             <div className="relative w-full mt-6">
@@ -20,11 +19,14 @@ export const SignUpFormInput = ({ label = '', value = "", validationError, ...ot
                     onBlur={() => setIsFocused(false)}
                 />
                 <label className={`
-                    absolute left-3 text-gray-500 transition-all
-                    peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-base
+                    absolute left-3 top-1 text-xs text-purple-500 transition-all cursor-text
+                    peer-placeholder-shown:top-3.5 
+                    peer-placeholder-shown:text-base
                     peer-placeholder-shown:text-gray-400
-                    peer-focus:top-1 peer-focus:text-xs peer-focus:text-purple-500 cursor-text
-                    ${value.length > 0 ? 'top-1 text-xs text-blue-500' : ''}
+                    peer-focus:top-1 
+                    peer-focus:text-xs 
+                    peer-focus:text-purple-500
+                    ${value.length > 0 ? 'top-1 text-xs text-purple-500' : ''}
                 `} htmlFor={otherProps.id}>
                     {label}
                 </label>

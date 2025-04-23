@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {createUserFromEmailAndPassword, createUserDoc} from '../../utils/firebase/firebase.utils'
 import { SignUpFormInput } from './generic/SignUpFormInput';
-import { AppUser } from '../interface/AppUser.type';
 import { ThemeButton } from './generic/ThemeButton';
 
 const defaultFormFields = {
@@ -19,24 +18,24 @@ const defaultValidations = {
 }
 
 type SignUpProps = {
-    updateUserState: (userDoc: AppUser) => void
+    setLoadingState: () => void,
+    unsetLoadingState: () => void
 }
 
-export const SignUp = ({ updateUserState }: SignUpProps) => {
+export const SignUp = ({ setLoadingState, unsetLoadingState }: SignUpProps) => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const [validationError, setValidationError] = useState(defaultValidations);
     const {displayName, email, password, confpassword} = formFields;
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = event?.target;
-        console.log(name, value);
         setFormFields({...formFields, [name]: value});
         setValidationError({...validationError, [name]: ''});
     }
 
     const handleSubmit = async (e:React.SyntheticEvent) => {
         e.preventDefault();
-        console.log(displayName, !password, !confpassword);
+        setLoadingState();
         if (!displayName) {
             setValidationError({...validationError, ['displayName']: 'Display Name is a required field'});
             return;
@@ -62,14 +61,11 @@ export const SignUp = ({ updateUserState }: SignUpProps) => {
         
         try {
             const { user } = await createUserFromEmailAndPassword(email, password);
-            console.log(user, 'user');
-
-            const userUpdated = await createUserDoc(user, {displayName});
-            console.log(userUpdated, 'userUpdated');
-            if (userUpdated) updateUserState(userUpdated);
+            await createUserDoc(user, {displayName});
         } catch (error) {
             console.log(error,'error');
         }
+        unsetLoadingState();
     }
     return (
         <>            
