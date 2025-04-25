@@ -1,14 +1,23 @@
+import { useContext } from 'react';
 import { Product } from '../../interface/Product.interface'
 import { ThemeButton } from './ThemeButton';
+import { CartContext } from '../../contexts/cart.context';
 
 type ProductCardProps = {
-    product: Product; // Expecting Car
+    product: Product;
     index: number;
     data: Product[];
     lastProductRef?: (node: HTMLDivElement | null) => void
 };
 export const ProductCard: React.FC<ProductCardProps> = ({ product, index, data, lastProductRef }) => {
-    const {id, name, imageUrl, ratingDesc, price, rating} = product;
+    const { name, imageUrl, ratingDesc, price, rating} = product;
+    const { addItemToCart } = useContext(CartContext);
+
+    const handleAddToCart = async () => {
+            
+        const productToAdd: Product = {...product};
+        await addItemToCart?.(productToAdd);
+    }
     return (
         <>
             <div ref={index === data.length - 1 ? lastProductRef : null} className="max-w-sm rounded bg-white text-center overflow-hidden shadow-lg" key={index}>
@@ -24,7 +33,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index, data, 
                     <p className="text-gray-500 text-xs">Limited Time Offer</p>
                 </div>
                 <div className="px-6 pt-4 pb-2">
-                    <ThemeButton type='button' btntype='outlined' >Add to Cart</ThemeButton>
+                    <ThemeButton type='button' btntype='outlined' cb={handleAddToCart} >Add to Cart</ThemeButton>
                 </div>
             </div>
         </>

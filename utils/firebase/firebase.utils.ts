@@ -57,30 +57,40 @@ export const signInWithGooglePopup = async () => await signInWithPopup(auth, pro
 
 export const db = getFirestore();
 
-export const createUserDoc = async (userAuth: User, additionalInfo = {}) => {
+export const createUserDoc = async (
+  userAuth: User,
+  additionalInfo: { displayName?: string } = {}
+) => {
   const userDoc = doc(db, 'users', userAuth.uid);
-
   const userSnapshot = await getDoc(userDoc);
-  console.log(userSnapshot,'userSnapshot');
+
   if (!userSnapshot.exists()) {
-    const {displayName, email} = userAuth;
+    const { displayName, email } = userAuth;
     const createdAt = new Date();
 
     try {
       const details = {
-        displayName, email, createdAt, ...additionalInfo
+        displayName: displayName || additionalInfo?.displayName || 'User',
+        email,
+        createdAt,
+        ...additionalInfo,
       };
       await setDoc(userDoc, details);
+      console.log('New user created in Firestore:', details);
       return details;
-    } catch (e:unknown) {
+    } catch (e: unknown) {
       if (e instanceof Error) {
-        console.log(e.message);
+        console.error('Error creating user document:', e.message);
       }
     }
+  } else {
+    const existingData = userSnapshot.data();
+    console.log('Existing user data fetched from Firestore:', existingData);
+    return existingData;
   }
 
-  return userSnapshot.data();
-}
+  return null;
+};
 
 export const createUserFromEmailAndPassword = async (email: string, password: string) => {
     return await createUserWithEmailAndPassword(auth, email, password);

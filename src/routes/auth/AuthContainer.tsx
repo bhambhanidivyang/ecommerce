@@ -27,7 +27,7 @@ export const AuthContainer = () => {
                 </div>
             }
             {currentUser && <div className='text-center font-sans flex items-center justify-center p-4 bg-gray-100'>
-                    Hello<span className='text-purple-500 font-bold'> {currentUser.displayName}</span>. Welcome to the Dashboard.
+                    Hello <span className='ml-1 font-bold'>{currentUser.displayName}</span>. Welcome to the Dashboard.
                 </div>
             }
         </>

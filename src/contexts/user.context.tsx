@@ -17,9 +17,11 @@ const UserProvider = ({ children }: React.PropsWithChildren) => {
     const value = {currentUser, setCurrentUser};
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChangedListener((user) => {
-            if (user) createUserDoc(user)
-            setCurrentUser(user);
+        const unsubscribe = onAuthStateChangedListener(async (user) => {
+            if (user) {
+                const updatedUser = await createUserDoc(user)
+                setCurrentUser(updatedUser);
+            }
         });
         return unsubscribe;
     }, [])
