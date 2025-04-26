@@ -1,35 +1,22 @@
 import { useContext } from "react";
 import { CartItemType } from "../interface/CartItemType.type";
 import { Product } from "../interface/Product.interface";
-import { ThemeButton } from "./generic/ThemeButton";
 import { CartContext } from "../contexts/cart.context";
+import { CheckoutItem } from "./CheckoutItem";
 
 type CartReviewProps = {
     cartItems: CartItemType[]
 }
 
 export const CartReview = ({ cartItems }: CartReviewProps) => {
-    const { addItemToCart, decreaseItemFromCart, removeItemFromCart} = useContext(CartContext);
+    const { totalCount, subTotalPrice, totalPrice, discountedAmount, taxedAmount} = useContext(CartContext);
+    const discountRate = 10;
 
-    const handleIncrementQuantity = async (product:Product) => {
-        await addItemToCart?.(product);
-    }
-
-    const handleDecrementQuantity = async (product:Product) => {
-        await decreaseItemFromCart?.(product);
-    }
-
-    const handleRemoveCartItem = async (product: Product) => {
-        await removeItemFromCart?.(product);
-    }
-    
-    const totalCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-    const totalPrice = cartItems.reduce((acc, item) => acc + (item.quantity * item.price), 0);
     return (
         <>
         <table className="table-auto w-full sm:w-3/4 mx-auto m-5 rounded-lg overflow-hidden">
             <thead>
-                <tr className="bg-purple-700 text-white">
+                <tr className="bg-black text-white">
                     <th className="px-6 py-3">Product</th>
                     <th className="px-6 py-3">Description</th>
                     <th className="px-6 py-3">Quantity</th>
@@ -41,26 +28,27 @@ export const CartReview = ({ cartItems }: CartReviewProps) => {
             <tbody>
                 {
                     cartItems.map((item,index) => {
-                        return <tr key={item.id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-200'}>
-                            <td className="px-6 py-3"><img src={item.imageUrl} className="w-20 h-20 object-cover rounded mx-auto block" /></td>
-                            <td className="px-6 py-3">{item.name}</td>
-                            <td className="px-6 py-3">
-                                <ThemeButton cb={() => handleDecrementQuantity(item)} type="button" btntype="tiny">-</ThemeButton>
-                                {item.quantity}
-                                <ThemeButton cb={() => handleIncrementQuantity(item)} type="button" btntype="tiny">+</ThemeButton>
-                            </td>
-                            <td className="px-6 py-3">₹{item.price}</td>
-                            <td className="px-6 py-3">₹{item.quantity * item.price}</td>
-                            <td className="px-6 py-3"><ThemeButton cb={() => handleRemoveCartItem(item)} type="button" btntype="tinyBlack">x</ThemeButton></td>
-                        </tr>
+                        return <CheckoutItem index={index} item={item} />
                     })
                 }
-                <tr className="bg-purple-700 text-white">
-                    <td colSpan={2} className="px-6 py-3"></td>
-                    <td className="px-6 py-3">{totalCount}</td>
-                    <td className="px-6 py-3"></td>
-                    <td className="px-6 py-3 font-sans font-bold">₹{totalPrice}</td>
-                    <td className="px-6 py-3"></td>
+                <tr className="bg-white border-t-1 border-gray-300 text-sm">
+                    <td className="px-6 pt-3 text-right text-gray-600 italic" colSpan={5}>Sub Total for {totalCount} items</td>
+                    <td className="px-6 pt-3 text-gray-600 italic">&#8377;{subTotalPrice}</td>
+                    <td></td>
+                </tr>
+                <tr className="bg-white text-sm">
+                    <td className="px-6 pt-1 text-right text-gray-600 italic" colSpan={5}>Coupon Discount @ {discountRate} %</td>
+                    <td className="px-6 pt-1 text-red-600 italic">- &#8377;{discountedAmount}</td>
+                    <td></td>
+                </tr>
+                <tr className="bg-white text-sm">
+                    <td className="px-6 pt-1 pb-3 text-right text-gray-600 italic" colSpan={5}>Tax & Charges</td>
+                    <td className="px-6 pt-1 pb-3 text-gray-600 italic">&#8377;{taxedAmount}</td>
+                    <td></td>
+                </tr>
+                <tr className="text-black border-t-1 border-gray-300 bg-white">
+                    <td colSpan={5} className="px-6 py-3 text-right font-sans italic font-semibold">Total Price:</td>
+                    <td className="px-6 py-3 text-md font-sans italic font-semibold">₹{totalPrice}</td>
                 </tr>
             </tbody>
         </table>

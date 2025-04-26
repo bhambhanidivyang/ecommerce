@@ -8,7 +8,12 @@ type CartContextType = {
     cartItems: CartItemType[],
     addItemToCart?: ( productToAdd: Product ) => void,
     decreaseItemFromCart?: ( productToAdd: Product ) => void,
-    removeItemFromCart ?: ( productToAdd: Product ) => void
+    removeItemFromCart ?: ( productToAdd: Product ) => void,
+    totalCount ?: number,
+    totalPrice ?: number,
+    subTotalPrice ?: number,
+    discountedAmount?: number,
+    taxedAmount?: number
 }
 
 const addCartItem = (cartItems: CartItemType[], productToAdd: Product): CartItemType[] => {
@@ -46,19 +51,25 @@ export const CartContext = createContext<CartContextType>({
     cartItems: [],
     addItemToCart: () => {},
     decreaseItemFromCart: () => {},
-    removeItemFromCart: () => {}
+    removeItemFromCart: () => {},
+    totalCount: 0,
+    subTotalPrice: 0,
+    totalPrice: 0,
+    discountedAmount: 0,
+    taxedAmount: 0
 })
 
 const CartProvider = ({ children }: React.PropsWithChildren) => {
     const [isCartOpen, setIsCarOpen] = useState(false);
     const [cartItems, setCartItems] = useState<CartItemType[]>([]);
+    const discountRate = 10;
+    const taxRate = 18;
 
     const addItemToCart = (productToAdd: Product) => {
         setCartItems((prev) => addCartItem(prev, productToAdd));
     }
 
     const decreaseItemFromCart = (productToDecrease: Product) => {
-        console.log(productToDecrease)
         setCartItems((prev) => decreaseCartItem(prev, productToDecrease));
     }
 
@@ -66,7 +77,17 @@ const CartProvider = ({ children }: React.PropsWithChildren) => {
         setCartItems((prev) => removeCartItem(prev, productToRemove));
     }
 
-    const value = { isCartOpen, setIsCarOpen, cartItems, addItemToCart, decreaseItemFromCart, removeItemFromCart };
+    const totalCount: number = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+    const subTotalPrice: number = parseFloat(Math.round(cartItems.reduce((acc, item) => acc + (item.quantity * item.price), 0)).toFixed(2));
+
+    const discountedAmount: number = parseFloat(Math.round(subTotalPrice * (discountRate/100)).toFixed(2));
+    
+    const taxedAmount: number = parseFloat(Math.round(subTotalPrice * (taxRate/100)).toFixed(2));
+
+    const totalPrice: number = subTotalPrice - discountedAmount + taxedAmount; 
+
+    const value = { isCartOpen, setIsCarOpen, cartItems, addItemToCart, decreaseItemFromCart, removeItemFromCart, totalCount, totalPrice, subTotalPrice, discountedAmount, taxedAmount };
     return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 };
 

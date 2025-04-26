@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { CartContext } from "../../contexts/cart.context";
 import { ThemeButton } from "../../components/generic/ThemeButton";
 import { Link } from "react-router-dom";
@@ -7,15 +7,31 @@ import { CartReview } from "../../components/CartReview";
 
 export const Checkout = () => {
     const { cartItems } = useContext(CartContext);
+    const [stage, setStage] = useState(1);
+
+    const handleClick = () => {
+        if (stage < 3) {
+            setStage((prev) => prev + 1);
+        } else {
+            setStage(1);
+        }
+    }
 
     return (
         <>
             <div className="text-center">
-                <h1 className="text-5xl font-semibold font-sans p-5 m-5">Secure Checkout</h1>
                 {cartItems.length > 0 &&
                     <div>
-                        <Stepper label1="Cart Review" label2="Details" label3="Order Review" />
-                        <CartReview cartItems={cartItems}  />
+                        <h1 className="text-4xl font-semibold font-sans p-5">Secure Checkout</h1>
+                        <Stepper label1="Cart Review" label2="Details" label3="Order Review" stage={stage}/>
+                        {stage === 1 && <CartReview cartItems={cartItems}  />}
+                        {stage === 2 && <div>Details</div> }
+                        {stage === 3 && <div>Review & Pay</div> }
+                        <div onClick={handleClick} className="w-full sm:w-3/4 mx-auto">
+                            <ThemeButton btntype="primary" type="button">
+                                {stage === 3 ? "Complete Payment" : "Proceed"} <span className="text-lg">&#8702;</span>
+                            </ThemeButton>
+                        </div>
                     </div>
                 }
                 {cartItems.length === 0 &&
