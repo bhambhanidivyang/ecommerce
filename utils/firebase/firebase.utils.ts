@@ -1,6 +1,8 @@
 import { initializeApp } from 'firebase/app'
 import { User, getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, NextOrObserver} from 'firebase/auth'
-import {getFirestore, doc, getDoc, setDoc} from 'firebase/firestore'
+import {getFirestore, doc, getDoc, setDoc, collection, writeBatch, getDocs, query} from 'firebase/firestore'
+import { Category } from '../../src/interface/Category.interface';
+import { Product } from '../../src/interface/Product.interface';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -56,6 +58,36 @@ export const auth = getAuth();
 export const signInWithGooglePopup = async () => await signInWithPopup(auth, provider);
 
 export const db = getFirestore();
+
+// Store data from JSON to firestore DB. To be used once via use effect hook from the product context. 
+export const addCollectionAndDocuments = async (collectionKey: string, objects: Category[], field: "title") => {
+  const collectionRef = collection(db, collectionKey); // create collection ref, pointer only for 'categories'
+  const batch = writeBatch(db); // initialize a batch transaction
+
+  // loop over all documents under the collection
+  objects.forEach((object) => {
+    const docRef = doc(collectionRef, object[field].toLocaleLowerCase()); // craete document ref, pointer only for 'categories/categoryname'
+    batch.set(docRef, object); // set operation to be attached in the batch
+  })
+
+  // execute batch operations, collection, documents will be created at this stage, and fields will be populated
+  await batch.commit();
+  console.log('Done');
+}
+
+export const getCategoriesAndDocuments = async () => {
+  const collectionRef = collection(db, 'categories');
+  const q = query(collectionRef);
+  const querySnapshot = await getDocs(q);
+
+  const categoriesData = querySnapshot.docs.reduce((acc, category) => {
+    const {title, items} = category.data();
+    acc[title.toLocaleLowerCase()] = items as Product[];
+    return acc;
+  }, {} as {[key: string]: Product[]});
+
+  return categoriesData;
+}
 
 export const createUserDoc = async (
   userAuth: User,

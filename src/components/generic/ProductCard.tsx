@@ -6,7 +6,7 @@ import { CartContext } from '../../contexts/cart.context';
 type ProductCardProps = {
     product: Product;
     index: number;
-    data: Product[];
+    data?: Product[];
     lastProductRef?: (node: HTMLDivElement | null) => void
 };
 export const ProductCard: React.FC<ProductCardProps> = ({ product, index, data, lastProductRef }) => {
@@ -20,7 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, index, data, 
     }
     return (
         <>
-            <div ref={index === data.length - 1 ? lastProductRef : null} className="max-w-sm rounded bg-white text-center overflow-hidden shadow-lg" key={index}>
+            <div ref={data && (index === data.length - 1) ? lastProductRef : null} className="max-w-sm rounded bg-white text-center overflow-hidden shadow-lg" key={index}>
                 <img className="w-full h-64 object-cover" src={imageUrl} alt="Sunset in the mountains" />
                 <div className="px-6 py-4">
                     <div className="mb-2">

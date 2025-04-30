@@ -25,8 +25,8 @@ export const CheckoutItem = ({item, index}: CheckoutItemProps) => {
                 {quantity}
                 <ThemeButton cb={handleIncrementQuantity} type="button" btntype="tiny">+</ThemeButton>
             </td>
-            <td className="px-3 py-1">&#8377;{price}</td>
-            <td className="px-3 py-1">&#8377;{quantity * price}</td>
+            <td className="px-3 py-1">${price}</td>
+            <td className="px-3 py-1">${quantity * price}</td>
             <td className="px-3 py-1"><ThemeButton cb={handleRemoveCartItem} type="button" btntype="tinyBlack">x</ThemeButton></td>
         </tr>
     </>

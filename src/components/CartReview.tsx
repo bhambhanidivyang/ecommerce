@@ -28,22 +28,22 @@ export const CartReview = ({ cartItems }: CartReviewProps) => {
             <tbody>
                 {
                     cartItems.map((item,index) => {
-                        return <CheckoutItem index={index} item={item} />
+                        return <CheckoutItem key={index} index={index} item={item} />
                     })
                 }
                 <tr className="bg-white border-t-1 border-gray-300 text-sm">
                     <td className="px-6 pt-3 text-right text-gray-600 italic" colSpan={5}>Sub Total for {totalCount} items</td>
-                    <td className="px-6 pt-3 text-gray-600 italic">&#8377;{subTotalPrice}</td>
+                    <td className="px-6 pt-3 text-gray-600 italic">${subTotalPrice}</td>
                     <td></td>
                 </tr>
                 <tr className="bg-white text-sm">
                     <td className="px-6 pt-1 text-right text-gray-600 italic" colSpan={5}>Coupon Discount @ {discountRate} %</td>
-                    <td className="px-6 pt-1 text-red-600 italic">- &#8377;{discountedAmount}</td>
+                    <td className="px-6 pt-1 text-red-600 italic">- ${discountedAmount}</td>
                     <td></td>
                 </tr>
                 <tr className="bg-white text-sm">
                     <td className="px-6 pt-1 pb-3 text-right text-gray-600 italic" colSpan={5}>Tax & Charges</td>
-                    <td className="px-6 pt-1 pb-3 text-gray-600 italic">&#8377;{taxedAmount}</td>
+                    <td className="px-6 pt-1 pb-3 text-gray-600 italic">${taxedAmount}</td>
                     <td></td>
                 </tr>
                 <tr className="text-black border-t-1 border-gray-300 bg-white">

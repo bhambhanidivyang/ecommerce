@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import { ProductCard } from "../components/generic/ProductCard"
-import {Product} from "../interface/Product.interface";
+import { ProductCard } from "./ProductCard"
+import {Product} from "../../interface/Product.interface";
 
 type LazyListProps = {
     data: Product[]; // Expecting an array of objects

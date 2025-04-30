@@ -1,10 +1,15 @@
 import { useContext } from "react"
-import { Outlet, Link } from "react-router-dom"
+import { Outlet, Link, NavLink } from "react-router-dom"
 import {UserContext} from '../../contexts/user.context'
 import { CartContext } from "../../contexts/cart.context"
 import { signOutUser } from '../../../utils/firebase/firebase.utils'
 import { CartIcon } from "../../components/CartIcon"
 import { CartDropdown } from "../../components/CartDropdown"
+
+const linkColor = {
+    inactive: "block mt-4 lg:inline-block lg:mt-0 text-black hover:text-purple-400 mr-4",
+    active: "block mt-4 lg:inline-block lg:mt-0 text-purple-500 hover:text-black mr-4 border-t-2",
+}
 
 export const Navigation = () => {
     const { currentUser, setCurrentUser } = useContext(UserContext);
@@ -31,11 +36,11 @@ export const Navigation = () => {
                 </div>
                 <div className="w-full block flex-grow lg:flex lg:w-auto justify-end">
                     <div className="text-sm items-center flex">
-                        <Link className="block mt-4 lg:inline-block lg:mt-0 text-black hover:text-purple-400 mr-4" to="/shop">Shop</Link>
-                        <Link className="block mt-4 lg:inline-block lg:mt-0 text-black hover:text-purple-400 mr-4" to="/contact">Contact</Link>
+                        <NavLink className={({isActive}) => isActive ? linkColor['active'] : linkColor['inactive']} to="/shop">Shop</NavLink>
+                        <NavLink className={({isActive}) => isActive ? linkColor['active'] : linkColor['inactive']} to="/contact">Contact</NavLink>
 
                         {!currentUser 
-                            ? <Link className="block mt-4 lg:inline-block lg:mt-0 text-black hover:text-purple-400 mr-4" to="/sign-in">Sign In</Link> 
+                            ? <NavLink className={({isActive}) => isActive ? linkColor['active'] : linkColor['inactive']} to="/sign-in">Sign In</NavLink> 
                             : <Link className="block mt-4 lg:inline-block lg:mt-0 text-black hover:text-purple-400 mr-4" to="/" onClick={handleSignOut}>Sign Out</Link>}
 
                             <CartIcon />                           

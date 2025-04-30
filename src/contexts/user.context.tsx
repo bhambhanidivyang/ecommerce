@@ -1,4 +1,4 @@
-import {createContext, useState, Dispatch, SetStateAction, useEffect} from 'react'
+import {createContext, Dispatch, SetStateAction, useEffect, useReducer} from 'react'
 import { AppUser } from '../interface/AppUser.type';
 import { onAuthStateChangedListener, createUserDoc } from '../../utils/firebase/firebase.utils';
 
@@ -12,8 +12,32 @@ export const UserContext = createContext<UserContextType>({
     setCurrentUser: () => null
 })
 
+type actionProps = {
+    type: string,
+    payload: AppUser | null
+}
+
+const userReducer = (state: {currentUser:AppUser | null}, action: actionProps) => {
+    const { type, payload } = action;
+    
+    switch (type) {
+        case 'SET_CURRENT_USER':
+            return {
+                ...state,
+                currentUser: payload
+            }
+        default:
+            throw new Error('Error in ' + type);
+    }
+}
+
 const UserProvider = ({ children }: React.PropsWithChildren) => {
-    const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
+    const [{ currentUser }, dispatch ] = useReducer(userReducer, {currentUser: null});
+
+    const setCurrentUser = (user: AppUser | null) => {
+        dispatch({ type:'SET_CURRENT_USER', payload:user });
+    }
+
     const value = {currentUser, setCurrentUser};
 
     useEffect(() => {
