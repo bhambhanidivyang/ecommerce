@@ -8,9 +8,12 @@ import UserProvider from './contexts/user.context.tsx'
 import './index.css'
 import CategoriesProvider from './contexts/categories.context.tsx'
 import CartProvider from './contexts/cart.context.tsx' 
+import { Provider } from 'react-redux'
+import { store } from './store/store.ts'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
+    <Provider store={store}>
     <BrowserRouter>
       <UserProvider>
         <CategoriesProvider>
@@ -20,5 +23,6 @@ createRoot(document.getElementById('root')!).render(
         </CategoriesProvider>
       </UserProvider>
     </BrowserRouter>
+    </Provider>
    </StrictMode>
 )

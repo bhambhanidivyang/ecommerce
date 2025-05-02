@@ -18,13 +18,8 @@ export const CategoryView = () => {
         fetchProducts();
     }, [category, categories])
 
-    // Reset when category changes
-    useEffect(() => {
-        setProducts([]);
-        setPage(1);
-    }, [category]);
-
     const fetchProducts = async () => {
+        console.log(page, maxPage);
         if (page > maxPage) return
         if (allProducts) {
             try { 

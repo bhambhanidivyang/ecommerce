@@ -1,9 +1,7 @@
-import { createContext, useReducer, useState } from 'react'
+import { createContext, useReducer } from 'react'
 import { CartItemType } from '../interface/CartItemType.type';
 import { Product } from '../interface/Product.interface';
-
-const DISCOUNT_RATE = 10;
-const TAX_RATE = 18;
+import {createAction} from "../../utils/reducer/reducer.utils"
 
 type CartContextType = {
     isCartOpen?: boolean,
@@ -29,7 +27,7 @@ type CartStateType = {
     taxedAmount?: number
 }
 
-type actionProps = 
+export type actionProps = 
 | { type: 'SET_IS_CART_OPEN'; payload: null }
 | { type: 'ADD_ITEM_TO_CART'; payload: Product }
 | { type: 'DECREASE_ITEM_FROM_CART'; payload: Product }
@@ -137,17 +135,14 @@ const CartProvider = ({ children }: React.PropsWithChildren) => {
 
     const updateCartItemReducer = (newCartItems: CartItemType[]) => {
         const totals = calculateTotals(newCartItems, 10, 18);
-        dispatch({
-            type: 'SET_CART_ITEMS',
-            payload: {
+        dispatch(createAction('SET_CART_ITEMS', {
                 cartItems: newCartItems,
                 ...totals
-            }
-        })
+            }));
     }
 
     const setIsCarOpen = () => {
-        dispatch({type: 'SET_IS_CART_OPEN', payload: null});
+        dispatch(createAction('SET_IS_CART_OPEN', null));
     }
 
     const addItemToCart = (product: Product) => {

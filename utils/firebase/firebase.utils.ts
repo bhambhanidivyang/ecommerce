@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { User, getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, NextOrObserver} from 'firebase/auth'
+import { User, getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, NextOrObserver, updateProfile} from 'firebase/auth'
 import {getFirestore, doc, getDoc, setDoc, collection, writeBatch, getDocs, query} from 'firebase/firestore'
 import { Category } from '../../src/interface/Category.interface';
 import { Product } from '../../src/interface/Product.interface';
@@ -93,22 +93,22 @@ export const createUserDoc = async (
   userAuth: User,
   additionalInfo: { displayName?: string } = {}
 ) => {
+  if (!userAuth) return;
   const userDoc = doc(db, 'users', userAuth.uid);
   const userSnapshot = await getDoc(userDoc);
-
   if (!userSnapshot.exists()) {
     const { displayName, email } = userAuth;
     const createdAt = new Date();
-
     try {
       const details = {
-        displayName: displayName || additionalInfo?.displayName || 'User',
+        displayName: displayName || additionalInfo?.displayName ||  'User',
         email,
         createdAt,
         ...additionalInfo,
       };
+      console.log(displayName,'displayName 109');
+      await updateProfile(userAuth, { displayName });
       await setDoc(userDoc, details);
-      console.log('New user created in Firestore:', details);
       return details;
     } catch (e: unknown) {
       if (e instanceof Error) {

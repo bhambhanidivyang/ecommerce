@@ -26,7 +26,7 @@ export const CategoryImageCard = ({cat,i}: CategoryProps) => {
             <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-lg"></div>
 
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10">
-              <h1 className="text-3xl font-bold mb-4">{cat}</h1>
+              <h1 className="text-3xl font-bold mb-4 capitalize">{cat}</h1>
               <ThemeButton cb={handleNavigate} btntype="primary" type="button">Shop Now</ThemeButton>
             </div>
           </div>

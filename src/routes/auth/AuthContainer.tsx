@@ -1,11 +1,11 @@
 import { SignUp } from '../../components/SignUp';
 import { SignIn } from '../../components/SignIn';
-import { useState, useContext } from 'react';
-import { UserContext } from '../../contexts/user.context';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export const AuthContainer = () => {
     const [loading, setLoading] = useState(false);
-    const {currentUser} = useContext(UserContext);
+    const currentUser = useSelector((state:any) => state.user.currentUser);
 
     const setLoadingState = () => {
         setLoading(true);
@@ -14,7 +14,7 @@ export const AuthContainer = () => {
     const unsetLoadingState = () => {
         setLoading(false);
     }
-
+    console.log(currentUser,'currentUser');
     return (
         <>
             {loading && <div className='text-center font-sans flex items-center justify-center p-4 bg-gray-100'>Loading...</div>}
