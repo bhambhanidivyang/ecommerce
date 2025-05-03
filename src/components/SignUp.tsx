@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {createUserFromEmailAndPassword, createUserDoc} from '../../utils/firebase/firebase.utils'
 import { SignUpFormInput } from './generic/SignUpFormInput';
 import { ThemeButton } from './generic/ThemeButton';
+import { updateProfile } from 'firebase/auth';
 
 const defaultFormFields = {
     displayName: '',
@@ -61,6 +62,7 @@ export const SignUp = ({ setLoadingState, unsetLoadingState }: SignUpProps) => {
         
         try {
             const { user } = await createUserFromEmailAndPassword(email, password);
+            await updateProfile(user, { displayName });
             await createUserDoc(user, {displayName});
         } catch (error) {
             console.log(error,'error');
