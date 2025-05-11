@@ -1,17 +1,47 @@
-import { useContext, useState } from "react";
-import { CartContext } from "../../contexts/cart.context";
+import { useState } from "react";
 import { ThemeButton } from "../../components/generic/ThemeButton";
 import { Link } from "react-router-dom";
 import { Stepper } from "../../components/generic/Stepper";
-import { CartReview } from "../../components/CartReview";
+import { CartReview } from "../../components/Checkout/CartReview/CartReview";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCartItemsState } from "../../store/cart/cart.selector";
+import { CheckoutDetailsForm } from "../../components/Checkout/Details/CheckoutDetailsForm";
+import { setCheckoutInfo } from "../../store/checkout/checkout.actions";
+import { OrderReview } from "../../components/Checkout/OrderReview/OrderReview";
 
 export const Checkout = () => {
-    const { cartItems } = useContext(CartContext);
+    const cartItems = useSelector(selectCartItemsState);
     const [stage, setStage] = useState(1);
+    const dispatch = useDispatch();
+
+    const [contactInfo, setContactInfo] = useState({});
+    const [shippingInfo, setShippingInfo] = useState({});
+    const [giftOptions, setGiftOptions] = useState(false);
+
+    const labels = [
+        "Cart Review",
+        "Details",
+        "Order Review"
+    ]
 
     const handleClick = () => {
         if (stage < 3) {
+            if (stage === 2) {
+                dispatch(setCheckoutInfo({
+                    contactInfo,
+                    shippingInfo,
+                    giftOptions
+                }));
+            }
             setStage((prev) => prev + 1);
+        } else {
+            setStage(3);
+        }
+    }
+
+    const handleBack = () => {
+        if (stage > 1) {
+            setStage((prev) => prev - 1);
         } else {
             setStage(1);
         }
@@ -21,14 +51,20 @@ export const Checkout = () => {
         <>
             <div className="text-center">
                 {cartItems.length > 0 &&
-                    <div>
+                    <div className="w-full sm:w-3/4 mx-auto">
                         <h1 className="text-4xl font-semibold font-sans p-5">Secure Checkout</h1>
-                        <Stepper label1="Cart Review" label2="Details" label3="Order Review" stage={stage}/>
+                        <Stepper labels={labels} stage={stage}/>
                         {stage === 1 && <CartReview cartItems={cartItems}  />}
-                        {stage === 2 && <div>Details</div> }
-                        {stage === 3 && <div>Review & Pay</div> }
-                        <div onClick={handleClick} className="w-full sm:w-3/4 mx-auto">
-                            <ThemeButton btntype="primary" type="button">
+                        {stage === 2 && 
+                            <CheckoutDetailsForm
+                                setContactInfo={setContactInfo}
+                                setShippingInfo={setShippingInfo}
+                                setGiftOptions={setGiftOptions} /> 
+                        }
+                        {stage === 3 && <OrderReview /> }
+                        <div className="w-full sm:w-3/4 mx-auto space-x-2 my-5">
+                            <ThemeButton btntype="outlined" type="button" cb={handleBack}>Back</ThemeButton>
+                            <ThemeButton btntype="primary" type="button" cb={handleClick} >
                                 {stage === 3 ? "Complete Payment" : "Proceed"} <span className="text-lg">&#8702;</span>
                             </ThemeButton>
                         </div>

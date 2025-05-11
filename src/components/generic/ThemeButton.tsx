@@ -1,6 +1,6 @@
 interface ThemeButtonProps {
     type: undefined | "button" | "submit" | "reset",
-    cb?: (...args: any[]) => void,
+    cb?: (...args: any[]) => any,
     btntype: "primary" | "outlined" | "tiny" | "tinyBlack",
     additionalClasses?: string
     children: React.ReactNode

@@ -1,12 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Product } from "../../interface/Product.interface";
-import { CategoriesContext } from "../../contexts/categories.context";
 import { useParams } from "react-router-dom";
 import { LazyList } from "../../components/generic/LazyList";
+import { useSelector } from "react-redux";
+import { selectCategories } from "../../store/categories/categories.selector";
 
 export const CategoryView = () => {
     const { category } = useParams();
-    const {categories} = useContext(CategoriesContext);
+    const categories = useSelector(selectCategories)
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -19,20 +20,16 @@ export const CategoryView = () => {
     }, [category, categories])
 
     const fetchProducts = async () => {
-        console.log(page, maxPage);
         if (page > maxPage) return
         if (allProducts) {
             try { 
-                console.log('trying');
                 setLoading(true);
                 const startIndex = (page - 1) * 10;
                 const endIndex = startIndex + 10;
                 const nextChunk = allProducts.slice(startIndex, endIndex);
-                console.log(allProducts, startIndex, endIndex, nextChunk,'param');
                 setProducts((prev) => [...prev, ...nextChunk]);
                 setPage((prev) => prev + 1);
             } catch(e) {
-                console.log('failed');
                 setError("Something went wrong! Please check console for detailed error.");
             } finally {
                 setLoading(false); 

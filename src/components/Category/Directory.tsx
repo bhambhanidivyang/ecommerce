@@ -1,4 +1,4 @@
-import { Product } from '../interface/Product.interface'
+import { Product } from '../../interface/Product.interface'
 import {CategoryImageCard} from './CategoryImageCard'
 
 type DirectoryProps = {

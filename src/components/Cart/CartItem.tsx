@@ -1,4 +1,4 @@
-import { CartItemType } from "../interface/CartItemType.type";
+import { CartItemType } from "../../interface/CartItemType.type";
 
 type CartItemProps = {
     item: CartItemType

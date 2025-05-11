@@ -1,19 +1,6 @@
-import { AppUser } from "../../interface/AppUser.type"
+import {actionProps, USER_ACTION_TYPES, USER_REDUCER_INITIAL_STATE, userStateType} from './user.types'
 
-const INITIAL_STATE = {
-    currentUser: null
-}
-
-type actionProps = {
-    type: string,
-    payload: AppUser | null
-}
-
-export const USER_ACTION_TYPES = {
-    SET_CURRENT_USER: 'SET_CURRENT_USER'
-}
-
-export const userReducer = (state: {currentUser:AppUser | null} = INITIAL_STATE, action: actionProps) => {
+export const userReducer = (state: userStateType = USER_REDUCER_INITIAL_STATE, action: actionProps) => {
     const { type, payload } = action;
     
     switch (type) {

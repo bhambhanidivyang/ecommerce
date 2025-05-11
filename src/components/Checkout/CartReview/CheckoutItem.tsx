@@ -1,7 +1,8 @@
-import { useContext } from "react";
-import { ThemeButton } from "./generic/ThemeButton";
-import { CartContext } from "../contexts/cart.context";
-import { CartItemType } from "../interface/CartItemType.type";
+import { ThemeButton } from "../../generic/ThemeButton";
+import { CartItemType } from "../../../interface/CartItemType.type";
+import { useDispatch, useSelector } from "react-redux";
+import { addItemToCart, decreaseItemFromCart, removeItemFromCart } from "../../../store/cart/cart.actions";
+import { selectCartItemsState } from "../../../store/cart/cart.selector";
 
 type CheckoutItemProps = {
     item: CartItemType,
@@ -10,11 +11,12 @@ type CheckoutItemProps = {
 
 export const CheckoutItem = ({item, index}: CheckoutItemProps) => {
     const {id, name, imageUrl, price, quantity} = item;
-    const { addItemToCart, decreaseItemFromCart, removeItemFromCart} = useContext(CartContext);
+    const cartItems = useSelector(selectCartItemsState);
+    const dispatch = useDispatch();
 
-    const handleIncrementQuantity = () => addItemToCart?.(item);
-    const handleDecrementQuantity = () => decreaseItemFromCart?.(item);
-    const handleRemoveCartItem = () => removeItemFromCart?.(item);
+    const handleIncrementQuantity = () => dispatch(addItemToCart(cartItems, item));
+    const handleDecrementQuantity = () => dispatch(decreaseItemFromCart(cartItems, item));
+    const handleRemoveCartItem = () => dispatch(removeItemFromCart(cartItems, item));
     return (
     <>
       <tr key={id} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-200'}>

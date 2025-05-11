@@ -1,10 +1,10 @@
-import { useContext } from "react"
-import { Directory } from "../../components/Directory"
-import { CategoriesContext } from "../../contexts/categories.context"
+import { Directory } from "../../components/Category/Directory"
+import { useSelector } from "react-redux";
+import { selectCategories } from "../../store/categories/categories.selector";
 
 export const Home = () => {
-    const {categories} = useContext(CategoriesContext);
+    const categories = useSelector(selectCategories)
     return <>
-        <Directory categories={categories} />
+        {categories && <Directory categories={categories} />}
     </>
 }

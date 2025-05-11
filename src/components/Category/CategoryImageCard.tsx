@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { ThemeButton } from "./generic/ThemeButton";
+import { ThemeButton } from "../generic/ThemeButton";
 
 
 type CategoryProps = {

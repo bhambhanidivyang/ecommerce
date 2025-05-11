@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import {createUserFromEmailAndPassword, createUserDoc} from '../../utils/firebase/firebase.utils'
-import { SignUpFormInput } from './generic/SignUpFormInput';
-import { ThemeButton } from './generic/ThemeButton';
+import {createUserFromEmailAndPassword, createUserDoc} from '../../../utils/firebase/firebase.utils'
+import { SignUpFormInput } from '../generic/SignUpFormInput';
+import { ThemeButton } from '../generic/ThemeButton';
+import { updateProfile } from 'firebase/auth';
 
 const defaultFormFields = {
     displayName: '',
@@ -38,34 +39,41 @@ export const SignUp = ({ setLoadingState, unsetLoadingState }: SignUpProps) => {
         setLoadingState();
         if (!displayName) {
             setValidationError({...validationError, ['displayName']: 'Display Name is a required field'});
+            unsetLoadingState();
             return;
         }
         if (!email) {
             setValidationError({...validationError, ['email']: 'Email is a required field'});
+            unsetLoadingState();
             return;
         }
         if (!password) {
             setValidationError({...validationError, ['password']: 'Password is a required field'});
+            unsetLoadingState();
             return;
         }
         if (!confpassword) {
             setValidationError({...validationError, ['confpassword']: 'Confirm Password is a required field'});
+            unsetLoadingState();
             return;
         }
 
         if (password !== confpassword) {
             setValidationError({...validationError, ['confpassword']: 'Confirm Password should match Password'});
+            unsetLoadingState();
             return;
         }
         console.log('all validations passed');
         
         try {
             const { user } = await createUserFromEmailAndPassword(email, password);
+            await updateProfile(user, { displayName });
             await createUserDoc(user, {displayName});
         } catch (error) {
             console.log(error,'error');
+        } finally {
+            unsetLoadingState();
         }
-        unsetLoadingState();
     }
     return (
         <>            

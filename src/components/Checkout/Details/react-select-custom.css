@@ -1,0 +1,23 @@
+.react-select-custom {
+    appearance: none !important;
+    display: block !important;
+    width: 100% !important;
+    background-color: #e5e7eb !important; /* bg-gray-200 */
+    color: #374151 !important;            /* text-gray-700 */
+    border: 1px solid #e5e7eb !important; /* border-gray-200 */
+    border-radius: 0.25rem !important;    /* rounded */
+    padding: 0.4rem 1rem !important;     /* py-3 px-4 */
+    line-height: 1.25 !important;         /* leading-tight */
+    transition: all 0.2s ease !important;
+    outline: none !important;             /* ✅ removes default focus ring */
+    box-shadow: none !important;          /* ✅ removes shadow focus */
+  }
+  
+  /* 👇 This handles the focused style properly */
+  .react-select-custom:focus-within {
+    background-color: #ffffff !important;
+    border: solid 1px #374151 !important; /* gray-500 */
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { SignUpFormInput } from './generic/SignUpFormInput';
-import { ThemeButton } from './generic/ThemeButton';
-import { createUserDoc, firebaseErrorCodes, userSignInWithEmailAndPassword, signInWithGooglePopup } from '../../utils/firebase/firebase.utils';
+import { SignUpFormInput } from '../generic/SignUpFormInput';
+import { ThemeButton } from '../generic/ThemeButton';
+import { createUserDoc, firebaseErrorCodes, userSignInWithEmailAndPassword, signInWithGooglePopup } from '../../../utils/firebase/firebase.utils';
 import { FirebaseError } from 'firebase/app';
 
 const defaultFields = {
@@ -31,7 +31,6 @@ export const SignIn = ({ setLoadingState, unsetLoadingState }: SignInProps) => {
             const res = await signInWithGooglePopup();
             console.log(res,'res');
         }catch (e:unknown) {
-            console.log(e.code);
             if (e instanceof FirebaseError) {
                 console.log(e.code);
                 setValidationError({...validationError, ['firebaseError']: firebaseErrorCodes[e.code]});
@@ -60,10 +59,12 @@ export const SignIn = ({ setLoadingState, unsetLoadingState }: SignInProps) => {
 
         if (!signInEmail) {
             setValidationError({...validationError, ['signInEmail']: 'Email is a required field'});
+            unsetLoadingState();
             return;
         }
         if (!signInPassword) {
             setValidationError({...validationError, ['signInPassword']: 'Password is a required field'});
+            unsetLoadingState();
             return;
         }
         try {

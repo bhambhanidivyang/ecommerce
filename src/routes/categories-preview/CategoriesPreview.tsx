@@ -1,9 +1,9 @@
-import { useContext } from "react"
-import { CategoriesContext } from "../../contexts/categories.context";
 import { CategoryPreview } from "./CategoryPreview";
+import { useSelector } from "react-redux";
+import { selectCategories } from "../../store/categories/categories.selector";
 
 export const CategoriesPreview = () => {
-    const {categories, setCategories} = useContext(CategoriesContext);
+    const categories = useSelector(selectCategories)
     const allProducts = Object.values(categories).flat();
 
     return (

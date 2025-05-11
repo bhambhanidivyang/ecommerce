@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 
 type StepperProps = {
-    label1: string,
-    label2: string,
-    label3: string,
+    labels: string[] ,
     stage: number
 }
 
-const stepState = {
-    active: "mx-auto mt-2 w-10 h-10 rounded-full flex items-center justify-center text-white bg-purple-500",
-    inactive: "mx-auto mt-2 w-10 h-10 rounded-full flex items-center justify-center text-white bg-gray-400"
+const stepStyle = {
+    activeli: "flex items-center text-purple-600 dark:text-purple-500",
+    activespan: "flex items-center justify-center w-5 h-5 me-2 text-xs border border-purple-600 rounded-full shrink-0 dark:border-purple-500",
+    inactiveli: "flex items-center",
+    inactivespan: "flex items-center justify-center w-5 h-5 me-2 text-xs border border-gray-500 rounded-full shrink-0 dark:border-gray-400"
 }
 
-export const Stepper = ({ label1, label2, label3, stage }: StepperProps) => {
+export const Stepper = ({ labels, stage }: StepperProps) => {
     const [step, setStep] = useState(1);
 
     useEffect(() => {
@@ -21,27 +21,24 @@ export const Stepper = ({ label1, label2, label3, stage }: StepperProps) => {
 
     return (
         <>
-            <div className="grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 text-center mx-auto p-5 w-full sm:w-3/4 lg:w-1/2">
-                <div className="text-center">
-                    <label>{label1}</label>
-                    <div className={ step === 1 ? stepState['active'] : stepState['inactive'] }>1</div>
-                </div>
-                <div className="text-center">
-                    <label></label>
-                    <div className="mx-auto mt-10 flex items-center justify-center text-gray-400">----------------------</div>
-                </div>
-                <div className="text-center">
-                    <label>{label2}</label>
-                    <div className={ step === 2 ? stepState['active'] : stepState['inactive'] }>2</div>
-                </div>
-                <div className="text-center">
-                    <label></label>
-                    <div className="mx-auto mt-10 flex items-center justify-center text-gray-400">----------------------</div>
-                </div>
-                <div className="text-center">
-                    <label>{label3}</label>
-                    <div className={ step === 3 ? stepState['active'] : stepState['inactive'] }>3</div>
-                </div>
+            <div className="w-full">
+                <ol className="flex items-center w-full p-3 space-x-2 text-sm font-medium text-center text-gray-500 bg-white border border-gray-200 rounded-lg shadow-xs dark:text-gray-400 sm:text-base dark:bg-gray-800 dark:border-gray-700 sm:p-4 sm:space-x-4 rtl:space-x-reverse">
+                    {labels && labels.map((label, index) => {
+                        const styleLi = step === (index + 1) ? stepStyle.activeli : stepStyle.inactiveli;
+                        const styleSpan = step === (index + 1) ? stepStyle.activespan : stepStyle.inactivespan;
+                        return <li key={index} className={styleLi}>
+                            <span className={styleSpan}>
+                                {index+1}
+                            </span>
+                            {label}
+                            { (index !== labels.length - 1) &&
+                                <svg className="w-3 h-3 ms-2 sm:ms-4 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 12 10">
+                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m7 9 4-4-4-4M1 9l4-4-4-4"/>
+                                </svg>
+                            }
+                        </li>
+                    })}
+                </ol>
             </div>
         </>
     );

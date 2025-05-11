@@ -1,7 +1,8 @@
-import { useContext } from 'react';
 import { Product } from '../../interface/Product.interface'
+import { addItemToCart } from '../../store/cart/cart.actions';
+import { selectCartItemsState } from '../../store/cart/cart.selector';
 import { ThemeButton } from './ThemeButton';
-import { CartContext } from '../../contexts/cart.context';
+import { useDispatch, useSelector } from 'react-redux';
 
 type ProductCardProps = {
     product: Product;
@@ -11,13 +12,14 @@ type ProductCardProps = {
 };
 export const ProductCard: React.FC<ProductCardProps> = ({ product, index, data, lastProductRef }) => {
     const { name, imageUrl, ratingDesc, price, rating} = product;
-    const { addItemToCart } = useContext(CartContext);
+    const dispatch = useDispatch();
+    const cartItems = useSelector(selectCartItemsState);
 
     const handleAddToCart = async () => {
-            
         const productToAdd: Product = {...product};
-        await addItemToCart?.(productToAdd);
+        await dispatch(addItemToCart(cartItems, productToAdd));
     }
+
     return (
         <>
             <div ref={data && (index === data.length - 1) ? lastProductRef : null} className="max-w-sm rounded bg-white text-center overflow-hidden shadow-lg" key={index}>

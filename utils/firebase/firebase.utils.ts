@@ -2,7 +2,6 @@ import { initializeApp } from 'firebase/app'
 import { User, getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, NextOrObserver, updateProfile} from 'firebase/auth'
 import {getFirestore, doc, getDoc, setDoc, collection, writeBatch, getDocs, query} from 'firebase/firestore'
 import { Category } from '../../src/interface/Category.interface';
-import { Product } from '../../src/interface/Product.interface';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -79,14 +78,7 @@ export const getCategoriesAndDocuments = async () => {
   const collectionRef = collection(db, 'categories');
   const q = query(collectionRef);
   const querySnapshot = await getDocs(q);
-
-  const categoriesData = querySnapshot.docs.reduce((acc, category) => {
-    const {title, items} = category.data();
-    acc[title.toLocaleLowerCase()] = items as Product[];
-    return acc;
-  }, {} as {[key: string]: Product[]});
-
-  return categoriesData;
+  return querySnapshot.docs.map((dataSnapshot) => dataSnapshot.data());
 }
 
 export const createUserDoc = async (
