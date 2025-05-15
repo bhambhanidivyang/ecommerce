@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { selectCurrentUser } from "../../store/user/user.selector"
 import { setCurrentUser } from "../../store/user/user.actions"
 import { selectIsCartOpenState } from "../../store/cart/cart.selector"
+import { persistor } from "../../store/store"
 
 const linkColor = {
     inactive: "block mt-4 lg:inline-block lg:mt-0 text-black hover:text-purple-400 mr-4",
@@ -19,6 +20,7 @@ export const Navigation = () => {
 
     const handleSignOut = async () => {
         await signOutUser();
+        persistor.purge();
         dispatch(setCurrentUser(null));
     }
 

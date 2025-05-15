@@ -8,7 +8,7 @@ import { AuthContainer } from './routes/auth/AuthContainer'
 import Shop from './routes/shop/Shop'
 import { Checkout } from './routes/checkout/Checkout'
 import { useEffect, useState } from 'react'
-import { createUserDoc, getCategoriesAndDocuments, onAuthStateChangedListener } from '../utils/firebase/firebase.utils'
+import { createUserDoc, onAuthStateChangedListener } from '../utils/firebase/firebase.utils'
 import { setCurrentUser } from './store/user/user.actions'
 import { fetchCategoriesAsync } from './store/categories/categories.actions'
 
@@ -37,11 +37,8 @@ const App = () => {
   }, [dispatch])
 
   useEffect(() => {
-      const getCategoriesMap = () => {
-          dispatch(fetchCategoriesAsync());
-      }
-      getCategoriesMap();
-      // addCollectionAndDocuments('categories', SHOP_DATA, 'title');
+    dispatch(fetchCategoriesAsync() as any);
+    // addCollectionAndDocuments('categories', SHOP_DATA, 'title');
   }, []);
 
   return (

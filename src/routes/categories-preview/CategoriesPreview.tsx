@@ -1,9 +1,10 @@
 import { CategoryPreview } from "./CategoryPreview";
 import { useSelector } from "react-redux";
-import { selectCategories } from "../../store/categories/categories.selector";
+import { selectCategories, selectIsLoading } from "../../store/categories/categories.selector";
 
 export const CategoriesPreview = () => {
-    const categories = useSelector(selectCategories)
+    const categories = useSelector(selectCategories);
+    const isLoading = useSelector(selectIsLoading);
     const allProducts = Object.values(categories).flat();
 
     return (

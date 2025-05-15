@@ -22,7 +22,7 @@ export const categoriesReducer = (state: categoriesStateType = CATEGORIES_REDUCE
             return {
                 ...state,
                 isLoading: false,
-                error: 'Error Identified'
+                error: payload
             }
         default:
             return state;

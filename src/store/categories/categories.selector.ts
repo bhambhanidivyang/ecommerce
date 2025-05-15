@@ -18,3 +18,8 @@ export const selectCategories = createSelector(
         return acc;
     }, {} as {[key: string]: Product[]})
 )
+
+export const selectIsLoading = createSelector(
+    [selectCategoriesReducer],
+    (categoriesSlice) => categoriesSlice.isLoading
+)

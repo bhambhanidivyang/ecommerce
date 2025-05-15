@@ -21,6 +21,6 @@ export const fetchCategoriesAsync = () => async(dispatch: any) => {
         const categoriesMap = await getCategoriesAndDocuments();
         return dispatch(setFetchedCategories(categoriesMap));
     } catch (error) {
-        return dispatch(errorFetchedCategories("error identified"));
+        return dispatch(errorFetchedCategories(error));
     }
 }
